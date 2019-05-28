@@ -7,6 +7,10 @@ import lombok.Data;
         RecycleManager, Registry, Script, String, Time, Uptime, WebParser
     }
 
+    public Measure(String name) {
+        this.name = name;
+    }
+    private String name;
     private Type measure;
 
     private int updateDivider;
@@ -26,4 +30,43 @@ import lombok.Data;
 
     private Group group;
 
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("[" + name + "]\n");
+
+        append(sb, "measure", measure.toString());
+        append(sb, "updateDivider", updateDivider);
+
+        return sb.toString();
+    }
+
+    private void append(StringBuilder sb, String name, String value) {
+        sb.append(name);
+        sb.append("=");
+        sb.append(value);
+        sb.append("\n");
+    }
+
+    private void append(StringBuilder sb, String name, boolean value) {
+        sb.append(name);
+        sb.append("=");
+        sb.append(value);
+        sb.append("\n");
+    }
+
+    private void append(StringBuilder sb, String name, int value) {
+        sb.append(name);
+        sb.append("=");
+        sb.append(value);
+        sb.append("\n");
+    }
+
+    private void append(StringBuilder sb, String name, double value) {
+        sb.append(name);
+        sb.append("=");
+        sb.append(value);
+        sb.append("\n");
+    }
 }

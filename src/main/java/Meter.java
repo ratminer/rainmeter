@@ -84,7 +84,7 @@ import java.util.stream.Collectors;
 
         sb.append("x=" + x + (relativeX ? "r\n" : "\n"));
         sb.append("y=" + y + (relativeY ? "r\n" : "\n"));
-        //append(sb, "Meter", meter.toString());
+        append(sb, "Meter", meter.toString());
         append(sb, "w", w);
         append(sb, "h", h);
 
