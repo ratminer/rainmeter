@@ -4,18 +4,16 @@ public class CreateWidget {
 
         Document doc = new Document();
 
-        Meter meter = new Meter("meter");
-        meter.setMeter(Meter.Type.String);
-        meter.setRelativeX(10);
-        meter.setRelativeY(10);
+        doc.setBackground("#@#Background.png");
 
-        doc.addMeter(meter);
+        StringMeter title = new StringMeter("title");
+        title.setX(100);
+        title.setY(12);
+        title.setW(190);
+        title.setH(18);
+        title.setText("asdf");
 
-        Measure measure = new Measure("measure");
-        measure.setMeasure(Measure.Type.String);
-
-        doc.addMeasure(measure);
-
+        doc.addMeter(title);
         compile(doc);
     }
 

@@ -18,8 +18,9 @@ import java.util.List;
 
         sb.append("[Rainmeter]\n");
         sb.append("update=" + update + "\n");
-        sb.append("backgroundMode" + backgroundMode + "\n");
-        sb.append("background=" + background + "\n");
+        sb.append("backgroundMode=" + backgroundMode + "\n");
+        if (background != null)
+            sb.append("background=" + background + "\n");
 
         sb.append("\n");
 
