@@ -1,232 +1,191 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Map;
+
 public class CreateWidget {
 
-    public static void main(String[] args) {
+    public Element measureTotal(String disk) {
+        return
+            new Element("measureTotal" + disk) {
+                {
+                    addField("Measure", "FreeDiskSpace");
+                    addField("Drive", disk);
+                    addField("Total", "1");
+                    addField("UpdateDivier", "120");
+                }
+            };
+    }
 
-        Document doc = new Document();
+    public Element measureUsed(String disk) {
+        return new Element("measureUsed" + disk) {
+            {
+                addField("Measure", "FreeDiskSpace");
+                addField("Drive", disk);
+                addField("Total","1");
+                addField("UpdateDivier", "120");
+                addField("InvertMeasure", "1");
+            }
+        };
+    }
 
+    public Element styleTitle() {
+        return new Element("styleTitle") {
+            {
+                addField("StringAlign","Center");
+                addField("StringCase","Upper");
+                addField("StringStyle","Bold");
+                addField("StringEffect","Shadow");
+                addField("FontEffectColor","0,0,0,50");
+                addField("FontColor","#colorText#");
+                addField("FontFace","#fontName#");
+                addField("FontSize","10");
+                addField("AntiAlias","1");
+                addField("ClipString","1");
+            }
+        };
+    }
+
+    public Element styleLeftText() {
+        return new Element("styleLeftText") {
+            {
+                addField("StringAlign","Left");
+                addField("StringCase","None");
+                addField("StringStyle","Bold");
+                addField("StringEffect","Shadow");
+                addField("FontEffectColor","0,0,0,20");
+                addField("FontColor","#colorText#");
+                addField("FontFace","#fontName#");
+                addField("FontSize","#textSize#");
+                addField("AntiAlias","1");
+                addField("ClipString","1");
+            }
+        };
+    };
+
+    public Element styleRightText() {
+        return new Element("styleRightText") {
+            {
+                addField("StringAlign","Right");
+                addField("StringCase","None");
+                addField("StringStyle","Bold");
+                addField("StringEffect","Shadow");
+                addField("FontEffectColor","0,0,0,20");
+                addField("FontColor","#colorText#");
+                addField("FontFace","#fontName#");
+                addField("FontSize","#textSize#");
+                addField("AntiAlias","1");
+                addField("ClipString","1");
+            }
+        };
+    }
+
+    public Element styleBar() {
+        return new Element("styleBar") {
+            {
+                addField("BarColor","#colorBar#");
+                addField("BarOrientation","HORIZONTAL");
+                addField("SolidColor","255,255,255,15");
+            }
+        };
+    }
+
+    public Element meterTitle() {
+        return new Element("meterTitle") {
+            {
+                addField("Meter","String");
+                addField("MeterStyle","styleTitle");
+                addField("X","100");
+                addField("Y","12");
+                addField("W","190");
+                addField("H","18");
+                addField("Text","Disks");
+            }
+        };
+    }
+
+    public Element meterLabel(String disk) {
+        return new Element("meterLabel" + disk) {
+            {
+                addField("Meter", "String");
+                addField("MeterStyle", "styleLeftText");
+                addField("Text", disk);
+                addField("x", "10");
+                addField("y", "40");
+                addField("w","190");
+                addField("h", "14");
+            }
+        };
+    }
+
+    public Element meterValue(String disk, Element e, Element e2) {
+        return new Element("meterValue" + disk) {
+            {
+                addField("Meter","String");
+                addField("MeterStyle","styelRightText");
+                addField("MeasureName", e.getName());
+                addField("MeasureName2", e2.getName());
+                addField("x", "200");
+                addField("Y","0r");
+                addField("w","190");
+                addField("h","14");
+                addField("Text","%1B/%2B used");
+                addField("NumOfDecimals","1");
+                addField("AutoScale","1");
+            }
+        };
+    }
+
+    public Element meterBar(String disk, Element e) {
+        return new Element("meterBar" + disk) {
+            {
+                addField("Meter","Bar");
+                addField("MeterStyle","styleBar");
+                addField("MeasureName",e.getName());
+                addField("x", "10");
+                addField("y","72");
+                addField("w","190");
+                addField("H","1");
+            }
+        };
+    }
+
+    public void run() {
+        Document doc = new Document("asdf");
         doc.setBackground("#@#Background.png");
 
-        StringMeter title = new StringMeter("title");
-        title.setX(100);
-        title.setY(12);
-        title.setW(190);
-        title.setH(18);
-        title.setText("asdf");
+        doc.addVariable("fontName", "Trebuchet MS");
+        doc.addVariable("textSize", "8");
+        doc.addVariable("colorBar", "235,170,0,255");
+        doc.addVariable("colorText","255,255,255,205");
+        doc.addVariable("disk1", "C:");
+        doc.addVariable("disk2", "D:");
 
-        doc.addMeter(title);
-        compile(doc);
+        // measures
+
+        Element totalDisk1 = measureTotal(doc.variable("disk1"));
+        Element usedDisk1 = measureTotal(doc.variable("disk1"));
+        Element totalDisk2 = measureTotal(doc.variable("disk2"));
+        Element usedDisk2 = measureTotal(doc.variable("disk2"));
+
+        doc.addMeasure(totalDisk1);
+        doc.addMeasure(usedDisk1);
+
+        // styles
+        doc.addStyle(styleTitle());
+        doc.addStyle(styleLeftText());
+        doc.addStyle(styleRightText());
+        doc.addStyle(styleBar());
+
+        // meters
+        doc.addMeter(meterTitle());
+        doc.addMeter(meterLabel(doc.variable("disk1")));
+        doc.addMeter(meterValue(doc.variable("disk1"), totalDisk1, usedDisk1));
+        doc.addMeter(meterBar(doc.variable("disk1"), totalDisk1));
+
+        doc.compile("C:\\Users\\robert.fernandes\\Documents\\Rainmeter\\Skins\\illustro\\Disk");
     }
 
-    public static void compile(Document doc) {
-        System.out.println(doc.toString());
+    public static void main(String[] args) {
+        new CreateWidget().run();
     }
 }
-
-/*
-; Lines starting ; (semicolons) are commented out.
-; That is, they do not affect the code and are here for demonstration purposes only.
-; ----------------------------------
-
-[Rainmeter]
-; This section contains general settings that can be used to change how Rainmeter behaves.
-Update=1000
-Background=#@#Background.png
-; #@# is equal to Rainmeter\Skins\illustro\@Resources
-BackgroundMode=3
-BackgroundMargins=0,34,0,14
-
-[Metadata]
-; Contains basic information of the skin.
-Name=System
-Author=poiru
-Information=Displays basic system stats.
-License=Creative Commons BY-NC-SA 3.0
-Version=1.0.0
-
-[Variables]
-; Variables declared here can be used later on between two # characters (e.g. #MyVariable#).
-fontName=Trebuchet MS
-textSize=8
-colorBar=235,170,0,255
-colorText=255,255,255,205
-
-; ----------------------------------
-; MEASURES return some kind of value
-; ----------------------------------
-
-[measureCPU]
-; This measure returns the average CPU load between all cores.
-Measure=CPU
-Processor=0
-
-[measureRAM]
-; Returns the amount of RAM used in bytes.
-Measure=PhysicalMemory
-UpdateDivider=20
-; UpdateDivider sets the rate at which the value of the measure is updated. It is
-; calculated as follows: UpdateDivider x Update. In this case, Update is set to
-; 1000 milliseconds (in the [Rainmeter] section). 1000 x 20 = 20000 ms or 20 seconds.
-
-[measureSWAP]
-; Returns the amount of SWAP (pagefile) used in bytes.
-Measure=SwapMemory
-UpdateDivider=20
-
-; ----------------------------------
-; STYLES are used to "centralize" options
-; ----------------------------------
-
-[styleTitle]
-StringAlign=Center
-StringCase=Upper
-StringStyle=Bold
-StringEffect=Shadow
-FontEffectColor=0,0,0,50
-FontColor=#colorText#
-FontFace=#fontName#
-FontSize=10
-AntiAlias=1
-ClipString=1
-
-[styleLeftText]
-StringAlign=Left
-; Meters using styleLeftText will be left-aligned.
-StringCase=None
-StringStyle=Bold
-StringEffect=Shadow
-FontEffectColor=0,0,0,20
-FontColor=#colorText#
-FontFace=#fontName#
-FontSize=#textSize#
-AntiAlias=1
-ClipString=1
-
-[styleRightText]
-StringAlign=Right
-StringCase=None
-StringStyle=Bold
-StringEffect=Shadow
-FontEffectColor=0,0,0,20
-FontColor=#colorText#
-FontFace=#fontName#
-FontSize=#textSize#
-AntiAlias=1
-ClipString=1
-
-[styleBar]
-BarColor=#colorBar#
-BarOrientation=HORIZONTAL
-SolidColor=255,255,255,15
-
-; ----------------------------------
-; METERS display images, text, bars, etc.
-; ----------------------------------
-
-[meterTitle]
-Meter=String
-MeterStyle=styleTitle
-; Using MeterStyle=styleTitle will basically "copy" the
-; contents of the [styleTitle] section here during runtime.
-X=100
-Y=12
-W=190
-H=18
-Text=System
-; Even though the text is set to System, Rainmeter will display
-; it as SYSTEM, because styleTitle contains StringCase=Upper.
-LeftMouseUpAction=["taskmgr.exe"]
-; Left-clicking this meter will launch taskmgr.exe (the Task Manager).
-ToolTipText=Open Task Manager
-; Hovering over this meter will display a tooltip with the text above.
-
-[meterLabelCPU]
-Meter=String
-MeterStyle=styleLeftText
-X=10
-Y=40
-W=190
-H=14
-Text=CPU Usage
-
-[meterValueCPU]
-Meter=String
-MeterStyle=styleRightText
-MeasureName=measureCPU
-X=200
-Y=0r
-; r stands for relative. In this case, the Y position of meterValueCPU is 0 pixels
-; below the Y value of the previous meter (i.e it's the same as in meterLabelCPU).
-W=190
-H=14
-Text=%1%
-; %1 stands for the value of MeasureName (measureCPU in this case).
-
-[meterBarCPU]
-Meter=Bar
-MeterStyle=styleBar
-MeasureName=measureCPU
-X=10
-Y=52
-W=190
-H=1
-
-[meterLabelRAM]
-Meter=String
-MeterStyle=styleLeftText
-X=10
-Y=60
-W=190
-H=14
-Text=RAM Usage
-
-[meterValueRAM]
-Meter=String
-MeterStyle=styleRightText
-MeasureName=measureRAM
-X=200
-Y=0r
-W=190
-H=14
-Text=%1%
-Percentual=1
-; Percentual=1 needs to be added her because measureRAM returns the amount
-; of RAM used in bytes. Using Percentual=1 will convert that into a percentual value.
-
-[meterBarRAM]
-Meter=Bar
-MeterStyle=styleBar
-MeasureName=measureRAM
-X=10
-Y=72
-W=190
-H=1
-
-[meterLabelSWAP]
-Meter=String
-MeterStyle=styleLeftText
-X=10
-Y=80
-W=190
-H=14
-Text=SWAP Usage
-
-[meterValueSWAP]
-Meter=String
-MeterStyle=styleRightText
-MeasureName=measureSWAP
-X=200
-Y=0r
-W=190
-H=14
-Text=%1%
-Percentual=1
-
-[meterBarSWAP]
-Meter=Bar
-MeterStyle=styleBar
-MeasureName=measureSWAP
-X=10
-Y=92
-W=190
-H=1
- */
